@@ -47,6 +47,7 @@
   .site-nav a.nv-designs:hover,.site-nav a.nv-designs:focus-visible{color:#5A18A5}
   .site-nav a.nv-archive:hover,.site-nav a.nv-archive:focus-visible{color:#FFBE89}
   .site-nav a.nv-about:hover,.site-nav a.nv-about:focus-visible{color:#5EC900}
+  .site-nav a.nv-resume:hover,.site-nav a.nv-resume:focus-visible{color:#fff;text-decoration:underline;text-underline-offset:3px}
   .site-nav a.nv-contact:hover,.site-nav a.nv-contact:focus-visible{color:#D8AD22}
   .logo-wrap{position:absolute;left:24px;top:calc(var(--hdr) / 2 - 18px);display:flex;align-items:center;transition:top .3s ease,left .3s ease}
   /* open header: the logo fills the strip with a 1 cm margin on every side */
@@ -57,12 +58,12 @@
     .site-header:hover .logo-wrap{top:var(--lg-gap);left:var(--lg-gap)}
     .site-header:hover .logo{height:calc(var(--hdr-open) - 2 * var(--lg-gap));width:calc((var(--hdr-open) - 2 * var(--lg-gap)) * 50 / 56)}
   }
-  .site-nav{position:absolute;right:clamp(20px,10vw,141px);top:21px}
+  .site-nav{position:absolute;right:clamp(20px,10vw,141px);top:calc((var(--hdr-open) - 6 * 20px) / 2)}
   .logo{display:block;width:32px;height:36px;-webkit-tap-highlight-color:transparent;transition:width .3s ease,height .3s ease}
   .logo svg{display:block;width:100%;height:100%}
   .logo svg{transition:transform .25s ease}
   .logo:hover svg,.logo:focus-visible svg{transform:scale(1.08)}
-  .site-nav ul{list-style:none;text-align:right;font-size:13px;line-height:21.5px;letter-spacing:.01em}
+  .site-nav ul{list-style:none;text-align:right;font-size:13px;line-height:20px;letter-spacing:.01em}
 
   .site-nav{opacity:0;visibility:hidden;transform:translateY(-4px);transition:opacity .25s ease,transform .25s ease,visibility 0s linear .25s}
   .site-header.open .site-nav,
@@ -139,8 +140,13 @@
   .focus-ring{fill:none;opacity:0}
   body.is-dragging{cursor:grabbing;-webkit-user-select:none;user-select:none}
 
-  .contact{padding:clamp(140px,16vw,220px) 20px clamp(160px,20vw,320px);text-align:center}
-  .contact-links{display:flex;justify-content:center;flex-wrap:wrap;gap:8px clamp(18px,2.8vw,40px);font-size:clamp(20px,2.15vw,30px);letter-spacing:.03em;color:var(--muted);margin-top:clamp(40px,4.5vw,64px)}
+  /* the contact block fills the last screen and sits in the middle of the space below the header */
+  .contact{min-height:calc(100vh - var(--hdr));padding:clamp(60px,8vw,120px) 20px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center}
+  @supports (height:100svh){ .contact{min-height:calc(100svh - var(--hdr))} }
+  .contact h2,.contact .sub{width:100%}
+  /* letter-spacing leaves a trailing gap after each word; the matching left pad keeps the row's ink centred */
+  .contact-links a{padding-left:.03em}
+  .contact-links{display:flex;justify-content:center;flex-wrap:wrap;width:100%;gap:8px clamp(18px,2.8vw,40px);font-size:clamp(20px,2.15vw,30px);letter-spacing:.03em;color:var(--muted);margin-top:clamp(40px,4.5vw,64px)}
 
   /* ---------- Floating plug label ---------- */
   .plug-tip{position:fixed;left:0;top:0;z-index:50;pointer-events:none;background:var(--header);border:1px solid #2c2c2c;border-left:3px solid var(--tip,#fff);padding:8px 12px 7px;white-space:nowrap;opacity:0;transition:opacity .12s ease;will-change:transform}
@@ -933,7 +939,7 @@
     :root{ --hdr:54px; --hdr-open:144px; }
     .site-header,.logo-wrap{padding-left:0}
     .logo-wrap{left:18px;top:calc(var(--hdr) / 2 - 15px)}
-    .site-nav{top:18px;right:20px}
+    .site-nav{top:calc((var(--hdr-open) - 6 * 20px) / 2);right:20px}
     .logo{width:27px;height:30px}
     .logo-tip{position:fixed;left:20px;top:calc(var(--hdr-open) + 12px);transform:translateY(-4px);max-width:calc(100vw - 40px)}  /* just below the open header */
     .logo:focus-visible + .logo-tip,.site-header.tip-open .logo-tip{transform:none}
@@ -983,6 +989,7 @@
       <li><a href="#designs" class="nv-designs">Designs</a></li>
       <li><a href="#/archive" class="nv-archive">Archive</a></li>
       <li><a href="#/about" class="nv-about">About</a></li>
+      <li><a href="docs/Sharada_Upasani_Resume.pdf" class="nv-resume" target="_blank" rel="noopener">Resume ↗</a></li>
       <li><a href="#contact" class="nv-contact">Contact</a></li>
     </ul>
   </nav>
