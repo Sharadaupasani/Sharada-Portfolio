@@ -953,6 +953,9 @@
     *,*::before,*::after{transition:none !important;animation:none !important}
   }
 </style>
+<!-- Vercel Web Analytics: counts visitors and page views (cookie-free); only works on the live vercel.app site -->
+<script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
@@ -4343,6 +4346,7 @@
     if (h.startsWith('#/')){
       if (!home.hidden) homeScroll = scrollY;
       renderPage(h.slice(1));
+      window.va('pageview', { route:h.slice(1), path:h.slice(1) });   // count project / about / archive pages too
       home.hidden = true; page.hidden = false;
       scrollToY(0, false);
       if (pendingInit){ pageCleanup = pendingInit(); pendingInit = null; }
