@@ -111,9 +111,13 @@
   .intro h1{font-family:var(--hand);font-weight:400;font-size:clamp(32px,2.9vw,42px);line-height:1.2;white-space:nowrap}
   .intro p{font-size:clamp(15px,1.2vw,17px);line-height:1.05;letter-spacing:.02em;width:min(46em,100%);margin:14px 0 0;text-align:center;text-wrap:balance}
 
-  .name{display:inline-grid;justify-items:center;align-items:center;height:1.2em;line-height:1.2em;vertical-align:top;cursor:pointer;white-space:nowrap;user-select:none;-webkit-tap-highlight-color:transparent}
-  .name .nv{grid-area:1/1;visibility:hidden}
-  .name .nv.on{visibility:visible}
+  .name{display:inline-grid;justify-items:center;align-items:center;height:1.2em;line-height:1.2em;vertical-align:top;white-space:nowrap;user-select:none}
+  /* the name cycles through its four spellings on its own: the new one rises in as the old one drifts up and out */
+  .name .nv{grid-area:1/1;opacity:0;transform:translateY(.35em);filter:blur(4px);
+            transition:opacity .6s ease,transform .7s cubic-bezier(.2,.8,.2,1),filter .6s ease}
+  .name .nv.on{opacity:1;transform:none;filter:none}
+  .name .nv.out{transform:translateY(-.35em)}
+  @media (prefers-reduced-motion:reduce){ .name .nv{transform:none !important;filter:none !important} }
   .nv[data-lang="hi"]{font-family:'Kalam',var(--hand);font-size:.86em}
   .nv[data-lang="gu"]{font-family:'Farsan',var(--hand);font-size:.98em}
   .nv[data-lang="ja"]{font-family:'Yomogi',var(--hand);font-size:.8em}
@@ -999,7 +1003,7 @@
   <svg id="wires" class="wires" aria-hidden="true" focusable="false"></svg>
 
   <section class="intro" id="top">
-    <h1><span class="mask" id="introTitle">hi, I'm <span class="name" id="name" tabindex="0" role="button" aria-label="Sharada (activate to change language)"><span class="nv" data-lang="en">Sharada</span></span></span></h1>
+    <h1><span class="mask" id="introTitle">hi, I'm <span class="name" id="name" aria-label="Sharada"><span class="nv" data-lang="en">Sharada</span></span></span></h1>
     <p><span class="mask" id="introText">Untangling wires, surviving on strong coffee, Observing people, and finding fun ways to make technology and the physical world talk to each other.</span></p>
   </section>
 
@@ -1115,12 +1119,18 @@
   NAMES.forEach(v => { const s = document.createElement('span'); s.className = 'nv'; s.dataset.lang = v.lang; s.lang = v.lang; s.textContent = v.t; nameEl.appendChild(s); });
   nameEl.firstChild && nameEl.firstChild.remove();          // the static fallback span from the HTML
   const nameVariants = [...nameEl.querySelectorAll('.nv')];
-  function setName(i){ nameVariants.forEach((s, k) => s.classList.toggle('on', k === i)); }
+  nameVariants.forEach(s => s.setAttribute('aria-hidden', 'true'));   // screen readers just hear "Sharada"
+  function setName(i){
+    nameVariants.forEach((s, k) => {
+      const was = s.classList.contains('on');
+      s.classList.toggle('on', k === i);
+      if (was && k !== i){ s.classList.add('out'); setTimeout(() => s.classList.remove('out'), 700); }
+    });
+  }
   function nextName(){ nameIdx = (nameIdx + 1) % NAMES.length; setName(nameIdx); }
   function measureName(){}
-  nameEl.addEventListener('pointerenter', e => { if (e.pointerType !== 'touch') nextName(); });
-  nameEl.addEventListener('click', () => { if (lastPT === 'touch') nextName(); });
-  nameEl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); nextName(); } });
+  /* no trigger: a new spelling every 3 seconds, paused while the tab isn't visible */
+  setInterval(() => { if (!document.hidden) nextName(); }, 3000);
 
   /* ================= PLUG TOOLTIP ================= */
   const tip = $('#plugTip');
